@@ -55,22 +55,19 @@ def kmeans(
     min_variation: float = float("inf")
     best_cluster: List[Point] = None
 
-    for i in max_iter:
+    for i in range(runs):
         centroids = sample(points, k)
-        clusters = {c: [] for c in centroids}
-        while True:
+        for i in range(max_iter):
+            clusters = [[] for c in centroids]
             for p in points:
-                closest_centroid = assign_cluster(p, centroids)
-                clusters[closest_centroid].append(p)
+                closest_centroid_idx = assign_cluster(p, centroids)
+                clusters[closest_centroid_idx].append(p)
 
-            means = [np.mean(c).tolist() for c in clusters.items()]
-            if sorted(means) == sorted(centroids):
-                # centroids converge when previous centroid values equal the new centroid values
-                break
+            means = [np.mean(c, axis=0).tolist() for c in clusters]
 
             centroids = means
 
-        variation = sum([calculate_variation(c) for c in clusters.items()])
+        variation = sum([calculate_variation(c) for c in clusters])
         if variation < min_variation:
             min_variation = variation
             best_cluster = centroids
