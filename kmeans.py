@@ -1,5 +1,4 @@
 from random import sample
-from random import randint
 from typing import List
 
 import numpy as np
