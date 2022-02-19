@@ -8,7 +8,12 @@ def kmeans(points: List[Point], k: int = 3, max_iter: int = 100) -> List[Point]:
     return a list of cluster centroids, given a list of points and the
     number of clusters to identify
     """
-    # check that all points in List[Point] are of the same dimensions (same length)
+    if k > len(points):
+        raise ValueError("number of clusters (k) must be less than number of points")
+
+    dimensions = {len(p) for p in points}
+    if len(dimensions) > 1:
+        raise ValueError("points must all have the same dimensions")
 
     # min_variation: float = infinity
     # best_cluster: List[Point] = None
