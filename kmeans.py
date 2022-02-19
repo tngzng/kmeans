@@ -30,3 +30,13 @@ def kmeans(points: List[Point], k: int = 3, max_iter: int = 100) -> List[Point]:
     #   if the sum of variation is less than min_variation, reassign min_variation and best_cluster
 
     # return best_cluster
+
+
+if __name__ == "__main__":
+    # test data are one-dimensional points with three clear centroids at 2, 12, and 22
+    points = [[1], [2], [3], [11], [12], [13], [21], [22], [23]]
+    centroids = kmeans(points, k=3)
+    assert len(centroids) == 3
+    assert [2] in centroids
+    assert [12] in centroids
+    assert [22] in centroids
