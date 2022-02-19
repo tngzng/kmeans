@@ -1,4 +1,7 @@
+from random import sample
 from typing import List
+
+import numpy as np
 
 Point = List[int]
 
@@ -15,21 +18,30 @@ def kmeans(points: List[Point], k: int = 3, max_iter: int = 100) -> List[Point]:
     if len(dimensions) > 1:
         raise ValueError("points must all have the same dimensions")
 
-    # min_variation: float = infinity
-    # best_cluster: List[Point] = None
+    min_variation: float = float("inf")
+    best_cluster: List[Point] = None
 
-    # for i in max_iter:
-    #   randomly initialize k centroids of the same dimension as the points in List[Point]
-    #   may want to add random_seed param for testing
-    #   while true:
-    #       iterate through the points and assign each to the nearest centroid
-    #       determine the mean of each cluster and reassign the centroid value to the mean
-    #       break when centroids converge (previous centroid values equal the new centroid values)
+    for i in max_iter:
+        centroids = sample(points, k)
+        clusters = {c: [] for c in centroids}
+        while True:
+            for p in points:
+                closest_centroid = assign_cluster(p, centroids)
+                clusters[closest_centroid].append(p)
 
-    #   calculate the sum of variation of the points in the current centroids' clusters
-    #   if the sum of variation is less than min_variation, reassign min_variation and best_cluster
+            means = [np.mean(c).tolist() for c in clusters.items()]
+            if sorted(means) == sorted(centroids):
+                # centroids converge when previous centroid values equal the new centroid values
+                break
 
-    # return best_cluster
+            centroids = means
+
+        variation = sum([calculate_variation(c) for c in clusters.items()])
+        if variation < min_variation:
+            min_variation = variation
+            best_cluster = centroids
+
+    return best_cluster
 
 
 if __name__ == "__main__":
