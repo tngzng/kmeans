@@ -1,12 +1,46 @@
 from random import sample
+from random import randint
 from typing import List
 
 import numpy as np
+from scipy.spatial.distance import euclidean
 
 Point = List[int]
 
 
-def kmeans(points: List[Point], k: int = 3, max_iter: int = 100) -> List[Point]:
+def assign_cluster(point: Point, centroids: List[Point]) -> int:
+    """
+    return index of closest centroid for a given point
+    """
+    min_distance = float("inf")
+    closest_centroid_idx = None
+    for idx, centroid in enumerate(centroids):
+        distance = euclidean(point, centroid)
+        if distance < min_distance:
+            min_distance = distance
+            closest_centroid_idx = idx
+    return closest_centroid_idx
+
+
+def calculate_variation(points: List[Point]) -> float:
+    """
+    return the maximum distance between any two points in a list
+    """
+    max_distance = 0
+    for i in range(len(points)):
+        for j in range(len(points)):
+            distance = euclidean(points[i], points[j])
+            max_distance = distance if distance > max_distance else max_distance
+
+    return max_distance
+
+
+def kmeans(
+    points: List[Point],
+    k: int = 3,
+    runs: int = 3,
+    max_iter: int = 100,
+) -> List[Point]:
     """
     return a list of cluster centroids, given a list of points and the
     number of clusters to identify
