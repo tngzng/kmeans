@@ -96,3 +96,15 @@ if __name__ == "__main__":
     assert [2] in centroids
     assert [12] in centroids
     assert [22] in centroids
+
+    # centroids and means with the same values should always be within threshold
+    centroids = [[1], [2], [3]]
+    means = [[1], [2], [3]]
+    threshold = 0.0001
+    assert within_threshold(centroids, means, threshold) == True
+
+    # centroids and means not within threshold
+    centroids = [[1], [2], [3]]
+    means = [[100], [200], [300]]
+    threshold = 0.0001
+    assert within_threshold(centroids, means, threshold) == False
