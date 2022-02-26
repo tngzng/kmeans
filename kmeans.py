@@ -18,6 +18,7 @@ def assign_cluster(point: Point, centroids: List[Point]) -> int:
         if distance < min_distance:
             min_distance = distance
             closest_centroid_idx = idx
+
     return closest_centroid_idx
 
 
