@@ -18,6 +18,7 @@ def assign_cluster(point: Point, centroids: List[Point]) -> int:
         if distance < min_distance:
             min_distance = distance
             closest_centroid_idx = idx
+
     return closest_centroid_idx
 
 
@@ -34,11 +35,23 @@ def calculate_variation(points: List[Point]) -> float:
     return max_distance
 
 
+def is_within_threshold(
+    centroids: List[Point], means: List[Point], threshold: float
+) -> bool:
+    for centroid, mean in zip(centroids, means):
+        distance = euclidean(centroid, mean)
+        if distance > threshold:
+            return False
+
+    return True
+
+
 def kmeans(
     points: List[Point],
     k: int = 3,
-    runs: int = 3,
-    max_iter: int = 100,
+    runs: int = 10,
+    max_iter: int = 300,
+    threshold: float = 0.0001,
 ) -> List[Point]:
     """
     return a list of cluster centroids, given a list of points and the
@@ -63,6 +76,8 @@ def kmeans(
                 clusters[closest_centroid_idx].append(p)
 
             means = [np.mean(c, axis=0).tolist() for c in clusters]
+            if is_within_threshold(centroids, means, threshold):
+                break
 
             centroids = means
 
@@ -82,3 +97,15 @@ if __name__ == "__main__":
     assert [2] in centroids
     assert [12] in centroids
     assert [22] in centroids
+
+    # centroids and means with the same values should always be within threshold
+    centroids = [[1], [2], [3]]
+    means = [[1], [2], [3]]
+    threshold = 0.0001
+    assert is_within_threshold(centroids, means, threshold) == True
+
+    # centroids and means not within threshold
+    centroids = [[1], [2], [3]]
+    means = [[100], [200], [300]]
+    threshold = 0.0001
+    assert is_within_threshold(centroids, means, threshold) == False
