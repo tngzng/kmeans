@@ -35,7 +35,7 @@ def calculate_variation(points: List[Point]) -> float:
     return max_distance
 
 
-def within_threshold(
+def is_within_threshold(
     centroids: List[Point], means: List[Point], threshold: float
 ) -> bool:
     for centroid, mean in zip(centroids, means):
@@ -76,7 +76,7 @@ def kmeans(
                 clusters[closest_centroid_idx].append(p)
 
             means = [np.mean(c, axis=0).tolist() for c in clusters]
-            if within_threshold(centroids, means, threshold):
+            if is_within_threshold(centroids, means, threshold):
                 break
 
             centroids = means
@@ -102,10 +102,10 @@ if __name__ == "__main__":
     centroids = [[1], [2], [3]]
     means = [[1], [2], [3]]
     threshold = 0.0001
-    assert within_threshold(centroids, means, threshold) == True
+    assert is_within_threshold(centroids, means, threshold) == True
 
     # centroids and means not within threshold
     centroids = [[1], [2], [3]]
     means = [[100], [200], [300]]
     threshold = 0.0001
-    assert within_threshold(centroids, means, threshold) == False
+    assert is_within_threshold(centroids, means, threshold) == False
